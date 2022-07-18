@@ -53,9 +53,19 @@ export default () => {
                     <label for="commentary" class="bold-label">Commentaire</label>
                     <textarea class="form-control blue-border" data-testid="commentary" rows="3"></textarea>
                   </div>
-                  <div class="col-half">
+                  <div 
+                    class="col-half file-image"
+                    ext-error-visible="false" 
+                    ext-error="Extensions valides : .jpg .jpeg ou .png" 
+                  >
                     <label for="file" class="bold-label">Justificatif</label>
-                    <input required type="file" class="form-control blue-border" data-testid="file" />
+                    <input 
+                      required 
+                      type="file" 
+                      accept=".jpg,.jpeg,.png" 
+                      class="form-control blue-border file-input" 
+                      data-testid="file"
+                    />
                   </div>
                 </div>
             </div>

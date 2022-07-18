@@ -2,6 +2,7 @@ import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
 
 export default class NewBill {
+
   constructor({ document, onNavigate, store, localStorage }) {
     this.document = document
     this.onNavigate = onNavigate
@@ -17,11 +18,26 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const inputDOM = this.document.querySelector(`input[data-testid="file"]`)
+    const fileImageDOM = document.querySelector(".file-image")
+    const file = inputDOM.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
+    const fileExt = fileName.split(".").pop()
+    const validFileExt = ["jpg", "jpeg", "png"]
+
+    console.log(fileExt)
+    console.log(validFileExt.includes(fileExt))
+    if (!validFileExt.includes(fileExt.toLowerCase())) {
+      fileImageDOM.setAttribute("ext-error-visible", true)
+      inputDOM.value=''
+      return;
+    }
+
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
+    fileImageDOM.setAttribute("ext-error-visible", false)
+
     formData.append('file', file)
     formData.append('email', email)
 
