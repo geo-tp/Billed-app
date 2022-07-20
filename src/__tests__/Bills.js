@@ -1,17 +1,18 @@
 /**
  * @jest-environment jsdom
  */
-
-import {fireEvent, screen, waitFor} from "@testing-library/dom"
-import BillsUI from "../views/BillsUI.js"
-import Bills from "../containers/Bills.js";
+import BillsUI from "../views/BillsUI.js";
+import {fireEvent, screen, waitFor} from "@testing-library/dom";
 import { bills } from "../fixtures/bills.js"
-import { ROUTES, ROUTES_PATH} from "../constants/routes.js";
+import { ROUTES,ROUTES_PATH } from "../constants/routes.js";
 import {localStorageMock} from "../__mocks__/localStorage.js";
+import mockStore from "../__mocks__/store";
+import "@testing-library/jest-dom";
+import Bills from "../containers/Bills.js";
 import router from "../app/Router.js";
 import $ from 'jquery';
-import mockStore from "../__mocks__/store"
 
+jest.mock("./../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
 
@@ -24,6 +25,7 @@ describe("Given I am connected as an employee", () => {
   })
 
   describe("When I am on Bills Page", () => {
+    
     test("Then bill icon in vertical layout should be highlighted", async () => {
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
@@ -127,7 +129,7 @@ describe("Given I am a user connected as Employee", () => {
       root.setAttribute("id", "root")
       document.body.append(root)
       router()
-      window.onNavigate(ROUTES_PATH.Dashboard)
+      window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByText("Mes notes de frais"))
       const tbody = screen.getByTestId("tbody")
 
@@ -153,6 +155,13 @@ describe("Given I am a user connected as Employee", () => {
       router()
     })
     test("fetches bills from an API and fails with 404 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+      }})
+      window.onNavigate(ROUTES_PATH.Bills)
       document.body.innerHTML = BillsUI({ error: "Erreur 404"});
       await new Promise(process.nextTick);
       const message = await screen.getByText(/Erreur 404/)
@@ -160,6 +169,13 @@ describe("Given I am a user connected as Employee", () => {
     })
 
     test("fetches messages from an API and fails with 500 message error", async () => {
+      mockStore.bills.mockImplementationOnce(() => {
+        return {
+          list : () =>  {
+            return Promise.reject(new Error("Erreur 404"))
+          }
+      }})
+      window.onNavigate(ROUTES_PATH.Bills)
       document.body.innerHTML = BillsUI({ error: "Erreur 500" });
       await new Promise(process.nextTick);
       const message = await screen.getByText(/Erreur 500/)
