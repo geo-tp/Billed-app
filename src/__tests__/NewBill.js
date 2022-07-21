@@ -11,7 +11,6 @@ import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
 import { ROUTES,ROUTES_PATH } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event"
-import BillsUI from "../views/BillsUI"
 jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
@@ -87,8 +86,6 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-
-
 
 // test d'integration POST
 describe("Given I am connected as an employee", () => {
