@@ -25,22 +25,20 @@ export default class NewBill {
     const fileName = filePath[filePath.length-1]
     const fileExt = fileName.split(".").pop()
     const validFileExt = ["jpg", "jpeg", "png"]
-
-    console.log(fileExt)
-    console.log(validFileExt.includes(fileExt))
+    
+    const formData = new FormData()
+    const email = JSON.parse(localStorage.getItem("user")).email
+    fileImageDOM.setAttribute("ext-error-visible", false)
+    
+    formData.append('file', file)
+    formData.append('email', email)
+    
     if (!validFileExt.includes(fileExt.toLowerCase())) {
       fileImageDOM.setAttribute("ext-error-visible", true)
       inputDOM.value=''
       return;
     }
-
-    const formData = new FormData()
-    const email = JSON.parse(localStorage.getItem("user")).email
-    fileImageDOM.setAttribute("ext-error-visible", false)
-
-    formData.append('file', file)
-    formData.append('email', email)
-
+    
     this.store
       .bills()
       .create({
@@ -50,7 +48,6 @@ export default class NewBill {
         }
       })
       .then(({fileUrl, key}) => {
-        console.log(fileUrl)
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
@@ -58,7 +55,6 @@ export default class NewBill {
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
