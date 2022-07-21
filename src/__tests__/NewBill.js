@@ -11,7 +11,7 @@ import mockStore from "../__mocks__/store";
 import router from "../app/Router.js";
 import { ROUTES,ROUTES_PATH } from "../constants/routes.js";
 import userEvent from "@testing-library/user-event"
-
+import BillsUI from "../views/BillsUI"
 jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
@@ -87,3 +87,35 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
+
+
+
+// test d'integration POST
+describe("Given I am connected as an employee", () => {
+  describe("When I am on NewBill Page", () => {
+    describe('When I fill form with valids infos and submit', () => {
+      test('Then bills count from mockStore increase by one', async () => {
+        jest.spyOn(mockStore, "bills")
+
+        const bills = await mockStore.bills().create({})
+
+        expect(bills.length).toBe(5)
+      })
+      test('Then create bill fail with 500 message error', async () => {
+      
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            create: () => {
+              return Promise.reject(new Error("Erreur 500"));
+            }
+          }
+        })
+  
+        document.body.innerHTML = ROUTES({ pathname: ROUTES_PATH.Bills, error: "Erreur 500"})
+        await new Promise(process.nextTick);
+        const message = await screen.getByText(/Erreur 500/)
+        expect(message).toBeTruthy()
+      })
+    })
+  })
+})  

@@ -62,8 +62,9 @@ const mockedBills = {
       }])
 
   },
-  create(bill) {
-    return Promise.resolve({fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'})
+  async create(bill) {
+    let bills = await mockedBills.list()
+    return Promise.resolve([...bills, {fileUrl: 'https://localhost:3456/images/test.jpg', key: '1234'}])
   },
   update(bill) {
     return Promise.resolve({
